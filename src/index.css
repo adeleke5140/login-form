@@ -1,5 +1,6 @@
 :root {
-  font-family: Open Runde, Inter,system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Open Runde, Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
   --primary: oklch(100% 0 0);
@@ -17,7 +18,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body{
+body {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,29 +27,28 @@ body{
   width: 100vw;
 }
 
-.app{
+.app {
   width: 24rem;
   height: 100%;
 }
 
-.app-header{
- display: flex;
- justify-content: center;
- align-items: center;
-flex-direction: column;
+.app-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-img{
+img {
   max-width: 100%;
   margin: 0 auto;
 }
 
-h1{
+h1 {
   font-size: min(20px, 4vw);
   text-align: center;
   font-weight: 500;
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {

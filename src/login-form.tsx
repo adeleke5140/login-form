@@ -1,68 +1,72 @@
-import { useState } from 'react'
-import type { SubmitHandler } from 'react-hook-form'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import './login-form.css'
-import { getErrorMessage } from './lib/error-util'
-import { mockFetch } from './lib/fetch'
+import { useState } from "react";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import "./login-form.css";
+import { getErrorMessage } from "./lib/error-util";
+import { mockFetch } from "./lib/fetch";
 
 const loginSchema = z.object({
-  email: z
-    .email('Enter a valid email address')
-    .nonempty('Email is required'),
-  password: z.string().min(8, 'Password must be at least 8 characters long'),
-})
+  email: z.email("Enter a valid email address").nonempty("Email is required"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+});
 
 const successCopy = {
-  heading: 'Signed in successfully',
-  errorHeading: 'Unable to sign in',
-}
+  heading: "Signed in successfully",
+  errorHeading: "Unable to sign in",
+};
 
-export type LoginFormValues = z.infer<typeof loginSchema>
+export type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-  })
+  });
 
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const isSubmitting = status === "loading";
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
-    setErrorMessage('')
-    setStatus('idle')
+    setErrorMessage("");
+    setStatus("loading");
 
     try {
-      const response = await mockFetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await mockFetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
-      })
+      });
 
-      const payload = await response.json()
+      const payload = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.message)
+        throw new Error(payload.message);
       }
 
-      setStatus('success')
-      setErrorMessage(payload.message)
-      reset()
+      setStatus("success");
+      setErrorMessage(payload.message);
+      reset();
     } catch (error: unknown) {
-      setStatus('error')
-      setErrorMessage(getErrorMessage(error))
+      setStatus("error");
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setStatus("idle");
     }
-  }
+  };
 
   return (
     <form className="form" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -72,8 +76,8 @@ const LoginForm = () => {
           id="email"
           type="email"
           placeholder="you@company.com"
-          {...register('email')}
-          aria-invalid={errors.email ? 'true' : 'false'}
+          {...register("email")}
+          aria-invalid={errors.email ? "true" : "false"}
           autoComplete="email"
         />
         {errors.email && <p className="field-error">{errors.email.message}</p>}
@@ -85,31 +89,38 @@ const LoginForm = () => {
           id="password"
           type="password"
           placeholder="Enter your password"
-          {...register('password')}
-          aria-invalid={errors.password ? 'true' : 'false'}
+          {...register("password")}
+          aria-invalid={errors.password ? "true" : "false"}
           autoComplete="current-password"
         />
-        {errors.password && <p className="field-error">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="field-error">{errors.password.message}</p>
+        )}
       </div>
 
       <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Signing you in…' : 'Login'}
+        {isSubmitting ? "Signing you in…" : "Login"}
       </button>
 
       {errorMessage && (
         <p
-          className={`status-banner ${status === 'error' ? 'error' : 'success'}`}
+          className={`status-banner ${
+            status === "error" ? "error" : "success"
+          }`}
           role="status"
           aria-live="polite"
         >
           <strong>
-            {status === 'error' ? successCopy.errorHeading : successCopy.heading}:
-          </strong>{' '}
+            {status === "error"
+              ? successCopy.errorHeading
+              : successCopy.heading}
+            :
+          </strong>{" "}
           {errorMessage}
         </p>
       )}
     </form>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;
