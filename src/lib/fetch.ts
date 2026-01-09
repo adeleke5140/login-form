@@ -44,7 +44,7 @@ export const mockFetch = async (
         ok: true,
         status: 200,
         json: async () => ({
-          message: `Welcome back, ${body.email || "friend"}!`,
+          message: `Welcome back to the Martian Verse, ${body.email}`,
         }),
       });
     }, mockDelay);
