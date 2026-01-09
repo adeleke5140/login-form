@@ -41,8 +41,8 @@ const LoginForm = () => {
     ? "Hide password"
     : "Show password";
   const passwordToggleIcon = isPasswordVisible
-    ? "/eye-open.svg"
-    : "/eye-closed.svg";
+    ? "./eye-open.svg"
+    : "./eye-closed.svg";
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
     if(status === 'loading'){
