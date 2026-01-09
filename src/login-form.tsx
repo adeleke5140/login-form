@@ -33,8 +33,16 @@ const LoginForm = () => {
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [response, setResponse] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const isSubmitting = status === "loading";
+  const passwordFieldType = isPasswordVisible ? "text" : "password";
+  const passwordToggleLabel = isPasswordVisible
+    ? "Hide password"
+    : "Show password";
+  const passwordToggleIcon = isPasswordVisible
+    ? "/eye-open.svg"
+    : "/eye-closed.svg";
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
     setErrorMessage("");
@@ -89,17 +97,31 @@ const LoginForm = () => {
 
       <div className="form-field">
         <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          {...register("password")}
-          aria-invalid={errors.password ? "true" : "false"}
-          autoComplete="current-password"
-          autoCapitalize="false"
-          aria-required="true"
-          aria-describedby="password-error"
-        />
+        <div className="password-input">
+          <input
+            id="password"
+            type={passwordFieldType}
+            placeholder="Enter your password"
+            {...register("password")}
+            aria-invalid={errors.password ? "true" : "false"}
+            autoComplete="current-password"
+            autoCapitalize="false"
+            aria-required="true"
+            aria-describedby="password-error"
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setIsPasswordVisible((prev) => !prev)}
+            aria-label={passwordToggleLabel}
+            aria-pressed={isPasswordVisible}
+            aria-controls="password"
+            title={passwordToggleLabel}
+          >
+            <img src={passwordToggleIcon} alt="" aria-hidden="true" />
+            <span className="sr-only">{passwordToggleLabel}</span>
+          </button>
+        </div>
         {errors.password && (
           <p id="password-error" className="field-error">
             {errors.password.message}
