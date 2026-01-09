@@ -9,13 +9,8 @@ import { mockFetch } from "./lib/fetch";
 
 const loginSchema = z.object({
   email: z.email("Enter a valid email address").nonempty("Email is required"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  password: z.string().nonempty("Password should not be empty"),
 });
-
-const successCopy = {
-  heading: "Signed in successfully",
-  errorHeading: "Unable to sign in",
-};
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -37,12 +32,14 @@ const LoginForm = () => {
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [response, setResponse] = useState("");
 
   const isSubmitting = status === "loading";
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
     setErrorMessage("");
     setStatus("loading");
+    setResponse("");
 
     try {
       const response = await mockFetch("/api/login", {
@@ -58,7 +55,7 @@ const LoginForm = () => {
       }
 
       setStatus("success");
-      setErrorMessage(payload.message);
+      setResponse(payload.message);
       reset();
     } catch (error: unknown) {
       setStatus("error");
@@ -79,8 +76,15 @@ const LoginForm = () => {
           {...register("email")}
           aria-invalid={errors.email ? "true" : "false"}
           autoComplete="email"
+          autoCapitalize="false"
+          aria-required="true"
+          aria-describedby="email-error"
         />
-        {errors.email && <p className="field-error">{errors.email.message}</p>}
+        {errors.email && (
+          <p id="email-error" className="field-error">
+            {errors.email.message}
+          </p>
+        )}
       </div>
 
       <div className="form-field">
@@ -92,9 +96,14 @@ const LoginForm = () => {
           {...register("password")}
           aria-invalid={errors.password ? "true" : "false"}
           autoComplete="current-password"
+          autoCapitalize="false"
+          aria-required="true"
+          aria-describedby="password-error"
         />
         {errors.password && (
-          <p className="field-error">{errors.password.message}</p>
+          <p id="password-error" className="field-error">
+            {errors.password.message}
+          </p>
         )}
       </div>
 
@@ -102,23 +111,30 @@ const LoginForm = () => {
         {isSubmitting ? "Signing you in…" : "Login"}
       </button>
 
-      {errorMessage && (
-        <p
-          className={`status-banner ${
-            status === "error" ? "error" : "success"
-          }`}
-          role="status"
-          aria-live="polite"
-        >
-          <strong>
-            {status === "error"
-              ? successCopy.errorHeading
-              : successCopy.heading}
-            :
-          </strong>{" "}
-          {errorMessage}
-        </p>
-      )}
+      <p
+        role="status"
+        aria-live="polite"
+        className={`status-banner ${errorMessage ? "error" : ""}`}
+      >
+        {errorMessage ? (
+          <>
+            <strong>Unable to Sign in:</strong> {errorMessage}
+          </>
+        ) : null}
+      </p>
+
+      <p
+        role="status"
+        aria-live="polite"
+        className={`status-banner ${response ? "success" : ""}`}
+      >
+        {response ? (
+          <>
+            <strong>Signed in successful: </strong>
+            {response}
+          </>
+        ) : null}
+      </p>
     </form>
   );
 };
