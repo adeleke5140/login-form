@@ -157,7 +157,8 @@
   display: block;
 }
 
-.status-banner.error, .status-banner.success{
+.status-banner.error,
+.status-banner.success {
   background: color-mix(in oklch, var(--tertiary) 10%, transparent);
   padding: 0.5rem;
 }
