@@ -15,6 +15,13 @@ const loginSchema = z.object({
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [response, setResponse] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -28,13 +35,6 @@ const LoginForm = () => {
     },
   });
 
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [response, setResponse] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   const isSubmitting = status === "loading";
   const passwordFieldType = isPasswordVisible ? "text" : "password";
   const passwordToggleLabel = isPasswordVisible
@@ -45,6 +45,10 @@ const LoginForm = () => {
     : "/eye-closed.svg";
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
+    if(status === 'loading'){
+      console.log("submission in progress")
+      return 
+    }
     setErrorMessage("");
     setStatus("loading");
     setResponse("");
@@ -129,7 +133,7 @@ const LoginForm = () => {
         )}
       </div>
 
-      <button type="submit" disabled={isSubmitting}>
+      <button type="submit" disabled={isSubmitting}> 
         {isSubmitting ? "Signing you in…" : "Login"}
       </button>
 
