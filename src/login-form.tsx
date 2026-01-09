@@ -156,7 +156,7 @@ const LoginForm = () => {
       >
         {response ? (
           <>
-            <strong>Signed in successful: </strong>
+            <strong>Signed in successfully: </strong>
             {response}
           </>
         ) : null}
