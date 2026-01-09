@@ -5,13 +5,10 @@
   font-weight: 400;
   --primary: oklch(100% 0 0);
   --secondary: oklch(0% 0 0);
-  --tertiary: lch(66.1 0 0);
-  --danger: lch(40 86.1 38.63);
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  --tertiary: oklch(0.71 0 0);
+  --danger: oklch(0.5 0.21 27.41);
+  color: var(--secondary);
+  background-color: var(--primary);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -48,17 +45,4 @@ h1 {
   font-size: min(20px, 4vw);
   text-align: center;
   font-weight: 500;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
